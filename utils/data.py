@@ -20,7 +20,7 @@ class GenerateToyDataset(Dataset):
         super().__init__()
         self.transforms = transforms
         self.num_samples = num_samples
-        self.num_claases = num_classes
+        self.num_classes = num_classes
         self.radius = radius
         self.center = center
 
