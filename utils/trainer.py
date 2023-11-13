@@ -39,10 +39,7 @@ class Trainer:
         train_loss = train_loss / total
         train_accuracy = correct / total
 
-        return (
-            train_loss,
-            train_accuracy,
-        )
+        return (train_loss, train_accuracy, self.model)
 
     def test(self, test_loader):
         self.model.eval()

@@ -53,11 +53,12 @@ class GenerateToyData:
         for j in range(num_classes):
             for i in range(split):
                 idx = range(total, total + num_samples)
-                r = np.linspace(0.0, radius, num_samples)  # radius
+                r = np.linspace(0.0, radius, num_samples, endpoint=False)  # radius
                 t = np.linspace(
                     (j + (0.25 + i * 0.005)) * 4.2,
                     ((j + (0.25 + i * 0.005)) + 1) * 4.2,
                     num_samples,
+                    endpoint=False,
                 )  # theta
                 samples[idx] = np.c_[
                     r * np.sin(t) + self.center[0],
@@ -80,35 +81,35 @@ class GenerateToyData:
 
 if __name__ == "__main__":
     generate = GenerateToyData(center=(0.5, 0.5))
-    samples, targets = generate.id(
-        num_samples=10000, num_classes=3, train=True, noise=0.6, radius=0.25
+    # samples, targets = generate.id(
+    #     num_samples=10000, num_classes=3, train=True, noise=0.6, radius=0.25
+    # )
+    # plt.scatter(samples[:20000, 0], samples[:20000, 1], s=0.2, c=targets[:20000])
+    num_samples = 10000
+    samples, targets = generate.id_gt(
+        num_samples, num_classes=3, train=True, noise=0, radius=0.25
     )
-    plt.scatter(samples[:20000, 0], samples[:20000, 1], s=0.2, c=targets[:20000])
-    # num_samples = 10000
-    # samples, targets = generate.id_gt(
-    #     num_samples, num_classes=3, train=True, noise=0, radius=0.25
-    # )
-    # plt.scatter(
-    #     samples[0:num_samples, 0],
-    #     samples[0:num_samples, 1],
-    #     s=0.1,
-    #     c="red",
-    #     label=str(targets[0]),
-    # )
-    # plt.scatter(
-    #     samples[num_samples : num_samples * 2, 0],
-    #     samples[num_samples : num_samples * 2, 1],
-    #     s=0.1,
-    #     c="blue",
-    #     label=str(targets[10000]),
-    # )
-    # plt.scatter(
-    #     samples[num_samples * 2 : num_samples * 3, 0],
-    #     samples[num_samples * 2 : num_samples * 3, 1],
-    #     s=0.1,
-    #     c="green",
-    #     label=str(targets[20000]),
-    # )
+    plt.scatter(
+        samples[0:num_samples, 0],
+        samples[0:num_samples, 1],
+        s=0.1,
+        c="red",
+        label=str(targets[0]),
+    )
+    plt.scatter(
+        samples[num_samples : num_samples * 2, 0],
+        samples[num_samples : num_samples * 2, 1],
+        s=0.1,
+        c="blue",
+        label=str(targets[10000]),
+    )
+    plt.scatter(
+        samples[num_samples * 2 : num_samples * 3, 0],
+        samples[num_samples * 2 : num_samples * 3, 1],
+        s=0.1,
+        c="green",
+        label=str(targets[20000]),
+    )
     plt.axis("square")
     plt.legend()
     plt.show()

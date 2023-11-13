@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import torch
 import torch.nn as nn
@@ -16,7 +17,7 @@ def main(args):
         num_classes=args.num_classes,
         center=(0.5, 0.5),
         train=True,
-        noise=0.5,
+        noise=0.4,
     )
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=128, shuffle=True, num_workers=2
@@ -27,7 +28,6 @@ def main(args):
         num_classes=args.num_classes,
         center=(0.5, 0.5),
         train=False,
-        noise=0.5,
     )
     test_loader = torch.utils.data.DataLoader(
         test_dataset, batch_size=128, shuffle=False, num_workers=2
@@ -40,10 +40,16 @@ def main(args):
     trainer = utils.trainer.Trainer(device, model, loss_function, optimizer)
     # train
     for i in range(args.epoch):
-        train_loss, train_acc = trainer.train(train_loader)
+        train_loss, train_acc, model = trainer.train(train_loader)
         print(f"Train@{i+1} loss {train_loss}," f"accuracy {train_acc:.2%}")
         test_loss, test_acc = trainer.test(test_loader)
         print(f"Test@{i+1} loss {test_loss}," f"accuracy {test_acc:.2%}")
+    output_model_path = "./outputs/pretrain/"
+    os.makedirs(output_model_path, exist_ok=True)
+    torch.save(
+        model.state_dict(),
+        os.path.join(output_model_path, str(args.hidden_size) + ".pt"),
+    )
 
 
 if __name__ == "__main__":
