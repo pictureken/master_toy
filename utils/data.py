@@ -15,39 +15,73 @@ class GenerateToyDataset(Dataset):
         center: Tuple[float, float],
         radius: float = 0.25,
         train: bool = True,
-        noise: float = None,
+        noise: float = 0.4,
     ) -> None:
         super().__init__()
         self.transforms = transforms
+        self.num_samples = num_samples
+        self.num_claases = num_classes
+        self.radius = radius
+        self.center = center
 
-        random.seed(2022)
-        if train and noise is None:
-            raise ValueError("Noise must be specified when train is True.")
+        if train:
+            # train dataset
+            random.seed(2022)
+            self.noise = noise
+            samples, targets = self._gen_train()
+
         else:
-            # テストデータの場合はNoiseを入れず別のシードに固定
-            noise = 0
+            # test dataset
             random.seed(2023)
-        samples = np.zeros((num_samples * num_classes, 2))
-        targets = np.zeros(num_samples * num_classes, dtype="uint8")
-        for j in range(num_classes):
-            idx = range(num_samples * j, num_samples * (j + 1))
-            r = np.linspace(0.0, 1, num_samples)  # radius
-            t = (
-                np.linspace(j * 4, (j + 1) * 4, num_samples)
-                + np.random.randn(num_samples) * noise
-            )  # theta
-            samples[idx] = np.c_[
-                r * np.sin(t) * radius + center[0],
-                r * np.cos(t) * radius + center[1],
-            ]
-            targets[idx] = j
+            samples, targets = self._gent_test()
+
         self.samples = samples
         self.targets = targets
+
+    def _gen_train(self):
+        samples = np.zeros((self.num_samples * self.num_classes, 2))
+        targets = np.zeros(self.num_samples * self.num_classes, dtype="uint8")
+        for j in range(self.num_classes):
+            idx = range(self.num_samples * j, self.num_samples * (j + 1))
+            r = np.linspace(0.0, self.radius, self.num_samples)  # radius
+            t = (
+                np.linspace(j * 4, (j + 1) * 4, self.num_samples)
+                + np.random.randn(self.num_samples) * self.noise
+            )  # theta
+            samples[idx] = np.c_[
+                r * np.sin(t) + self.center[0],
+                r * np.cos(t) + self.center[1],
+            ]
+            targets[idx] = j
+        return (samples, targets)
+
+    def _gen_test(self):
+        SPLIT = 100
+        CLASS_LIST = [1, 2, 0]
+        samples = np.zeros((self.num_samples * self.num_classes, 2))
+        targets = np.zeros(self.num_samples * self.num_classes, dtype="uint8")
+        split_samples = self.num_samples // SPLIT
+        total = 0
+        for j in range(self.num_classes):
+            for i in range(SPLIT):
+                idx = range(total, total + split_samples)
+                r = np.linspace(0.0, self.radius, split_samples)  # radius
+                t = np.linspace(
+                    (j + (0.25 + i * 0.005)) * 4.2,
+                    ((j + (0.25 + i * 0.005)) + 1) * 4.2,
+                    split_samples,
+                )  # theta
+                samples[idx] = np.c_[
+                    r * np.sin(t) + self.center[0],
+                    r * np.cos(t) + self.center[1],
+                ]
+                targets[idx] = CLASS_LIST[j]
+                total += split_samples
+        return (samples, targets)
 
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
         sample = self.samples[index]
         label = self.targets[index]
-        # data = self.transforms(sample)
         data = torch.tensor(sample).float()
         return data, label
 
@@ -55,7 +89,7 @@ class GenerateToyDataset(Dataset):
         return len(self.samples)
 
 
-class GenerateToyOodDataset(Dataset):
+class GenerateToyCircleDataset(Dataset):
     def __init__(
         self,
         transforms,
@@ -64,15 +98,19 @@ class GenerateToyOodDataset(Dataset):
         inner_radius: float = 0.35,
         outer_radius: float = 0.5,
     ) -> None:
-        pass
+        theta = 2 * np.pi * np.random.rand(num_samples)
+        r = inner_radius + (outer_radius - inner_radius) * np.random.rand(num_samples)
+        x = r * np.cos(theta) + center[0]
+        y = r * np.sin(theta) + center[1]
+        x = x.reshape(len(x), 1)
+        y = y.reshape(len(y), 1)
+        self.samples = np.concatenate((x, y), axis=1)
 
-    def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
+    def __getitem__(self, index: int) -> torch.Tensor:
         sample = self.samples[index]
-        label = self.targets[index]
+        data = torch.tensor(sample).float()
 
-        data = self.transforms(sample)
-
-        return data, label
+        return data
 
     def __len__(self) -> int:
         return len(self.samples)
@@ -82,11 +120,16 @@ if __name__ == "__main__":
     from torchvision import transforms
 
     transforms = transforms.Compose([transforms.ToTensor()])
-    train_dataset = GenerateToyDataset(
+    # train_dataset = GenerateToyDataset(
+    #     transforms,
+    #     num_samples=10000,
+    #     num_classes=3,
+    #     center=(0.5, 0.5),
+    #     train=True,
+    #     noise=0.5,
+    # )
+    train_dataset = GenerateToyCircleDataset(
         transforms,
         num_samples=10000,
-        num_classes=3,
         center=(0.5, 0.5),
-        train=True,
-        noise=0.5,
     )

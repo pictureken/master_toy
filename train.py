@@ -23,10 +23,11 @@ def main(args):
     )
     test_dataset = utils.data.GenerateToyDataset(
         transform,
-        num_samples=3000,
+        num_samples=1000,
         num_classes=args.num_classes,
         center=(0.5, 0.5),
         train=False,
+        noise=0.5,
     )
     test_loader = torch.utils.data.DataLoader(
         test_dataset, batch_size=128, shuffle=False, num_workers=2
@@ -37,6 +38,7 @@ def main(args):
     loss_function = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
     trainer = utils.trainer.Trainer(device, model, loss_function, optimizer)
+    # train
     for i in range(args.epoch):
         train_loss, train_acc = trainer.train(train_loader)
         print(f"Train@{i+1} loss {train_loss}," f"accuracy {train_acc:.2%}")
@@ -47,7 +49,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--num_classes", type=int, default=3)
-    parser.add_argument("--hidden_size", type=int, default=10)
+    parser.add_argument("--hidden_size", type=int, default=1000)
     parser.add_argument("--epoch", type=int, default=1000)
     args = parser.parse_args()
     main(args)
