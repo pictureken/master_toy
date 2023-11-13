@@ -33,7 +33,7 @@ class GenerateToyDataset(Dataset):
         else:
             # test dataset
             random.seed(2023)
-            samples, targets = self._gent_test()
+            samples, targets = self._gen_test()
 
         self.samples = samples
         self.targets = targets
