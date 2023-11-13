@@ -49,7 +49,7 @@ class GenerateToyData:
         split = 100
         num_samples = num_samples // split
         total = 0
-        class_list = [1, 2, 0]
+        class_list = [1, 0, 2]
         for j in range(num_classes):
             for i in range(split):
                 idx = range(total, total + num_samples)
@@ -80,31 +80,35 @@ class GenerateToyData:
 
 if __name__ == "__main__":
     generate = GenerateToyData(center=(0.5, 0.5))
-    samples, targets = generate.id(
-        num_samples=10000, num_classes=3, train=True, noise=0.6, radius=0.25
+    # samples, targets = generate.id(
+    #     num_samples=10000, num_classes=3, train=True, noise=0.6, radius=0.25
+    # )
+    # plt.scatter(samples[:, 0], samples[:, 1], s=0.2, c=targets)
+    num_samples = 10000
+    samples, targets = generate.id_gt(
+        num_samples, num_classes=3, train=True, noise=0, radius=0.25
     )
-    plt.scatter(samples[:, 0], samples[:, 1], s=0.2, c=targets)
-    # num_samples = 10000
-    # samples, targets = generate.id_gt(
-    #     num_samples, num_classes=3, train=True, noise=0, radius=0.25
-    # )
-    # plt.scatter(
-    #     samples[0:num_samples, 0], samples[0:num_samples, 1], s=0.1, c="red", label="0"
-    # )
-    # plt.scatter(
-    #     samples[num_samples : num_samples * 2, 0],
-    #     samples[num_samples : num_samples * 2, 1],
-    #     s=0.1,
-    #     c="blue",
-    #     label="1",
-    # )
-    # plt.scatter(
-    #     samples[num_samples * 2 : num_samples * 3, 0],
-    #     samples[num_samples * 2 : num_samples * 3, 1],
-    #     s=0.1,
-    #     c="green",
-    #     label="2",
-    # )
+    plt.scatter(
+        samples[0:num_samples, 0],
+        samples[0:num_samples, 1],
+        s=0.1,
+        c="red",
+        label=str(targets[0]),
+    )
+    plt.scatter(
+        samples[num_samples : num_samples * 2, 0],
+        samples[num_samples : num_samples * 2, 1],
+        s=0.1,
+        c="blue",
+        label=str(targets[10000]),
+    )
+    plt.scatter(
+        samples[num_samples * 2 : num_samples * 3, 0],
+        samples[num_samples * 2 : num_samples * 3, 1],
+        s=0.1,
+        c="green",
+        label=str(targets[20000]),
+    )
     plt.axis("square")
     plt.legend()
     plt.show()

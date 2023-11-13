@@ -57,7 +57,7 @@ class GenerateToyDataset(Dataset):
 
     def _gen_test(self):
         SPLIT = 100
-        CLASS_LIST = [1, 2, 0]
+        CLASS_LIST = [1, 0, 2]
         samples = np.zeros((self.num_samples * self.num_classes, 2))
         targets = np.zeros(self.num_samples * self.num_classes, dtype="uint8")
         split_samples = self.num_samples // SPLIT
