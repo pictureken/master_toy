@@ -121,6 +121,8 @@ class GenerateGridDataset(Dataset):
         x = np.linspace(0, 1, 1000)
         y = np.linspace(0, 1, 1000)
         xv, yv = np.meshgrid(x, y)
+        xv = xv.flatten()
+        yv = yv.flatten()
         self.samples = np.concatenate((xv, yv), axis=1)
 
     def __getitem__(self, index: int) -> torch.Tensor:

@@ -98,13 +98,10 @@ if __name__ == "__main__":
     samples, targets = generate.id_gt(
         num_samples, num_classes=3, train=True, noise=0, radius=0.25
     )
-    plt.scatter(
-        samples[:, 0],
-        samples[:, 1],
-        s=0.1,
-        c=targets,
-        label=str(targets[0]),
-    )
+    x, y = generate.grid()
+    x = x.flatten()
+    y = y.flatten()
+    print(x.shape)
+    plt.scatter(x, y, s=0.1)
     plt.axis("square")
-    plt.legend()
     plt.show()
