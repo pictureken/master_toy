@@ -45,7 +45,7 @@ def main(args):
     # id test
     test_loss, test_acc, outputs_sum = trainer.test(id_test_loader)
     print(f"loss {test_loss}," f"accuracy {test_acc:.2%}")
-    output_tensor_path = "./outputs/id/tensor/"
+    output_tensor_path = "./outputs/tensor/ood/"
     os.makedirs(output_tensor_path, exist_ok=True)
     torch.save(
         outputs_sum,
@@ -54,7 +54,7 @@ def main(args):
 
     # ood test
     outputs_sum = trainer.test(ood_test_loader, id=False)
-    output_tensor_path = "./outputs/ood/tensor/"
+    output_tensor_path = "./outputs/tensor/ood/"
     os.makedirs(output_tensor_path, exist_ok=True)
     torch.save(
         outputs_sum,
