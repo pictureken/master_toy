@@ -31,9 +31,16 @@ def main(args):
         ood_test_dataset, batch_size=128, shuffle=False, num_workers=2
     )
 
+    # grid data loader
+    grid_test_dataset = utils.data.GenerateGridDataset()
+    grid_test_loader = torch.utils.data.DataLoader(
+        grid_test_dataset, batch_size=128, shuffle=False, num_workers=2
+    )
+
     model = utils.model.NeuralNet(
         in_features=2, hidden_size=args.hidden_size, out_features=args.num_classes
     )
+
     output_model_path = "./outputs/pretrain/"
     pretrained_model_path = os.path.join(
         output_model_path, str(args.hidden_size) + ".pt"
@@ -55,6 +62,15 @@ def main(args):
     # ood test
     outputs_sum = trainer.test(ood_test_loader, id=False)
     output_tensor_path = "./outputs/tensor/ood/"
+    os.makedirs(output_tensor_path, exist_ok=True)
+    torch.save(
+        outputs_sum,
+        os.path.join(output_tensor_path, str(args.hidden_size) + ".pt"),
+    )
+
+    # grid test
+    outputs_sum = trainer.test(grid_test_loader, id=False)
+    output_tensor_path = "./outputs/tensor/grid/"
     os.makedirs(output_tensor_path, exist_ok=True)
     torch.save(
         outputs_sum,

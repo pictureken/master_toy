@@ -116,6 +116,23 @@ class GenerateToyCircleDataset(Dataset):
         return len(self.samples)
 
 
+class GenerateGridDataset(Dataset):
+    def __init__(self) -> None:
+        x = np.linspace(0, 1, 1000)
+        y = np.linspace(0, 1, 1000)
+        xv, yv = np.meshgrid(x, y)
+        self.samples = np.concatenate((xv, yv), axis=1)
+
+    def __getitem__(self, index: int) -> torch.Tensor:
+        sample = self.samples[index]
+        data = torch.tensor(sample).float()
+
+        return data
+
+    def __len__(self) -> int:
+        return len(self.samples)
+
+
 if __name__ == "__main__":
     from torchvision import transforms
 

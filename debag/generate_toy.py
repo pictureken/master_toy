@@ -70,13 +70,22 @@ class GenerateToyData:
 
     # ドーナツ状のOODデータを生成
     def ood(
-        self, num_samples: int, inner_radius: int, outer_radius: int
+        self,
+        num_samples: int,
+        inner_radius: int = 0.35,
+        outer_radius: int = 0.5,
     ) -> Tuple[list, list]:
         theta = 2 * np.pi * np.random.rand(num_samples)
         r = inner_radius + (outer_radius - inner_radius) * np.random.rand(num_samples)
         x = r * np.cos(theta) + self.center[0]
         y = r * np.sin(theta) + self.center[1]
         return (x, y)
+
+    def grid(self):
+        x = np.linspace(0, 1, 1000)
+        y = np.linspace(0, 1, 1000)
+        xv, yv = np.meshgrid(x, y)
+        return xv, yv
 
 
 if __name__ == "__main__":
