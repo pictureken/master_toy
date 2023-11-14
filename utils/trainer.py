@@ -58,8 +58,8 @@ class Trainer:
                     inputs, targets = inputs.to(self.device), targets.to(self.device)
                     outputs = self.model(inputs)
                     loss = self.criterion(outputs, targets)
-                    outputs = F.softmax(outputs, dim=1)
                     outputs_sum[total : (total + inputs.size(0)), :] += outputs
+                    outputs = F.softmax(outputs, dim=1)
                     test_loss += loss.item()
                     _, predicted = outputs.max(1)
                     correct += predicted.eq(targets).sum().item()
