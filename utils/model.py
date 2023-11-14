@@ -16,7 +16,7 @@ class NeuralNet(nn.Module):
 
 class DeepNeuralNet(nn.Module):
     def __init__(self, in_features, hidden_size, out_features):
-        super(NeuralNet, self).__init__()
+        super(DeepNeuralNet, self).__init__()
         self.relu = nn.ReLU()
         self.fc1 = nn.Linear(in_features, hidden_size // 2)
         self.fc2 = nn.Linear(hidden_size // 2, hidden_size)
