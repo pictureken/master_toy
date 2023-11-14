@@ -46,13 +46,18 @@ class Trainer:
         test_loss = 0
         correct = 0
         total = 0
-
+        outputs_sum = (
+            torch.Tensor(len(test_loader) * test_loader.batch_size, 3)
+            .zero_()
+            .to(self.device)
+        )
         with torch.no_grad():
             for _, (inputs, targets) in enumerate(test_loader):
                 inputs, targets = inputs.to(self.device), targets.to(self.device)
                 outputs = self.model(inputs)
                 loss = self.criterion(outputs, targets)
                 outputs = F.softmax(outputs, dim=1)
+                outputs_sum[total : (total + inputs.size(0)), :] += outputs
                 test_loss += loss.item()
                 _, predicted = outputs.max(1)
                 correct += predicted.eq(targets).sum().item()
@@ -61,7 +66,4 @@ class Trainer:
             test_loss = test_loss / total
             test_accuracy = correct / total
 
-        return (
-            test_loss,
-            test_accuracy,
-        )
+        return (test_loss, test_accuracy, outputs_sum)

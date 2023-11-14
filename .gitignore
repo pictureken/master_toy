@@ -1,2 +1,4 @@
 debag
 outputs
+__pycache__
+notebooks

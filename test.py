@@ -32,13 +32,19 @@ def main(args):
     loss_function = nn.CrossEntropyLoss()
     trainer = utils.trainer.Trainer(device, model, loss_function)
     # test
-    test_loss, test_acc = trainer.test(test_loader)
+    test_loss, test_acc, outputs_sum = trainer.test(test_loader)
     print(f"loss {test_loss}," f"accuracy {test_acc:.2%}")
+    output_tensor_path = "./outputs/tensor/"
+    os.makedirs(output_tensor_path, exist_ok=True)
+    torch.save(
+        outputs_sum,
+        os.path.join(output_tensor_path, str(args.hidden_size) + ".pt"),
+    )
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--num_classes", type=int, default=3)
-    parser.add_argument("--hidden_size", type=int, default=1)
+    parser.add_argument("--hidden_size", type=int, default=1000)
     args = parser.parse_args()
     main(args)
