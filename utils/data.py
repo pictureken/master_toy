@@ -122,7 +122,7 @@ class GenerateGridDataset(Dataset):
         y = np.linspace(0, 1, 1000)
         xv, yv = np.meshgrid(x, y)
         xv = xv.flatten()
-        yv = yv.flatten().reshape(len(yv), 1)
+        yv = yv.flatten()
         xv = xv.reshape(len(xv), 1)
         yv = yv.reshape(len(yv), 1)
         self.samples = np.concatenate((xv, yv), axis=1)
