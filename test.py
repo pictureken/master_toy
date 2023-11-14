@@ -37,7 +37,7 @@ def main(args):
         grid_test_dataset, batch_size=128, shuffle=False, num_workers=2
     )
 
-    model = utils.model.NeuralNet(
+    model = utils.model.DeepNeuralNet(
         in_features=2, hidden_size=args.hidden_size, out_features=args.num_classes
     )
 

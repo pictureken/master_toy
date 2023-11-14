@@ -85,6 +85,10 @@ class GenerateToyData:
         x = np.linspace(0, 1, 1000)
         y = np.linspace(0, 1, 1000)
         xv, yv = np.meshgrid(x, y)
+        xv = xv.flatten()
+        yv = yv.flatten()
+        xv = xv.reshape(len(xv), 1)
+        yv = yv.reshape(len(yv), 1)
         return xv, yv
 
 
