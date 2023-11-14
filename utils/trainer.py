@@ -77,6 +77,6 @@ class Trainer:
                     outputs = self.model(inputs)
                     outputs = F.softmax(outputs, dim=1)
                     outputs_sum[total : (total + inputs.size(0)), :] += outputs
-                    total += targets.size(0)
+                    total += inputs.size(0)
 
             return outputs_sum
