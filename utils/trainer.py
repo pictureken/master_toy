@@ -41,7 +41,7 @@ class Trainer:
 
         return (train_loss, train_accuracy, self.model)
 
-    def test(self, test_loader):
+    def test(self, test_loader, id: bool = True):
         self.model.eval()
         test_loss = 0
         correct = 0
@@ -51,19 +51,32 @@ class Trainer:
             .zero_()
             .to(self.device)
         )
-        with torch.no_grad():
-            for _, (inputs, targets) in enumerate(test_loader):
-                inputs, targets = inputs.to(self.device), targets.to(self.device)
-                outputs = self.model(inputs)
-                loss = self.criterion(outputs, targets)
-                outputs = F.softmax(outputs, dim=1)
-                outputs_sum[total : (total + inputs.size(0)), :] += outputs
-                test_loss += loss.item()
-                _, predicted = outputs.max(1)
-                correct += predicted.eq(targets).sum().item()
-                total += targets.size(0)
+        # In-Distribution
+        if id:
+            with torch.no_grad():
+                for _, (inputs, targets) in enumerate(test_loader):
+                    inputs, targets = inputs.to(self.device), targets.to(self.device)
+                    outputs = self.model(inputs)
+                    loss = self.criterion(outputs, targets)
+                    outputs = F.softmax(outputs, dim=1)
+                    outputs_sum[total : (total + inputs.size(0)), :] += outputs
+                    test_loss += loss.item()
+                    _, predicted = outputs.max(1)
+                    correct += predicted.eq(targets).sum().item()
+                    total += targets.size(0)
 
-            test_loss = test_loss / total
-            test_accuracy = correct / total
+                test_loss = test_loss / total
+                test_accuracy = correct / total
 
-        return (test_loss, test_accuracy, outputs_sum)
+            return (test_loss, test_accuracy, outputs_sum)
+        # Out-of-Distribution
+        else:
+            with torch.no_grad():
+                for _, inputs in enumerate(test_loader):
+                    inputs = inputs.to(self.device)
+                    outputs = self.model(inputs)
+                    outputs = F.softmax(outputs, dim=1)
+                    outputs_sum[total : (total + inputs.size(0)), :] += outputs
+                    total += targets.size(0)
+
+            return outputs_sum
