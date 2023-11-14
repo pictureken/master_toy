@@ -19,11 +19,11 @@ class DeepNeuralNet(nn.Module):
         super(DeepNeuralNet, self).__init__()
         self.relu = nn.ReLU()
         self.fc1 = nn.Linear(in_features, hidden_size // 4)
-        self.fc3 = nn.Linear(hidden_size // 4, hidden_size // 2)
-        self.fc4 = nn.Linear(hidden_size // 2, hidden_size)
-        self.fc5 = nn.Linear(hidden_size, hidden_size // 2)
-        self.fc6 = nn.Linear(hidden_size // 2, hidden_size // 4)
-        self.fc7 = nn.Linear(hidden_size // 4, out_features)
+        self.fc2 = nn.Linear(hidden_size // 4, hidden_size // 2)
+        self.fc3 = nn.Linear(hidden_size // 2, hidden_size)
+        self.fc4 = nn.Linear(hidden_size, hidden_size // 2)
+        self.fc5 = nn.Linear(hidden_size // 2, hidden_size // 4)
+        self.fc6 = nn.Linear(hidden_size // 4, out_features)
 
     def forward(self, x):
         out = self.fc1(x)
@@ -37,6 +37,4 @@ class DeepNeuralNet(nn.Module):
         out = self.fc5(out)
         out = self.relu(out)
         out = self.fc6(out)
-        out = self.relu(out)
-        out = self.fc7(out)
         return out
