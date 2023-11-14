@@ -94,18 +94,9 @@ class GenerateToyData:
 
 if __name__ == "__main__":
     generate = GenerateToyData(center=(0.5, 0.5))
-    # samples, targets = generate.id(
-    #     num_samples=10000, num_classes=3, train=True, noise=0.7, radius=0.25
-    # )
-    # plt.scatter(samples[:, 0], samples[:, 1], s=0.2, c=targets)
-    num_samples = 1000
-    samples, targets = generate.id_gt(
-        num_samples, num_classes=3, train=True, noise=0, radius=0.25
+    samples, targets = generate.id(
+        num_samples=1000, num_classes=3, train=True, noise=0.4, radius=0.25
     )
-    x, y = generate.grid()
-    x = x.flatten()
-    y = y.flatten()
-    print(x.shape)
-    plt.scatter(x, y, s=0.1)
+    plt.scatter(samples[:, 0], samples[:, 1], s=1, c=targets)
     plt.axis("square")
     plt.show()
