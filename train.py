@@ -24,7 +24,7 @@ def main(args):
     )
     test_dataset = utils.data.GenerateToyDataset(
         transform,
-        num_samples=1000,
+        num_samples=100,
         num_classes=args.num_classes,
         center=(0.5, 0.5),
         train=False,
@@ -44,11 +44,11 @@ def main(args):
         print(f"Train@{i+1} loss {train_loss}," f"accuracy {train_acc:.2%}")
         test_loss, test_acc, _ = trainer.test(test_loader)
         print(f"Test@{i+1} loss {test_loss}," f"accuracy {test_acc:.2%}")
-    output_model_path = "./outputs/pretrain/"
+    output_model_path = f"./outputs/pretrain/{args.hidden_size}"
     os.makedirs(output_model_path, exist_ok=True)
     torch.save(
         model.state_dict(),
-        os.path.join(output_model_path, str(args.hidden_size) + ".pt"),
+        os.path.join(output_model_path, str(args.trial) + ".pt"),
     )
 
 
@@ -57,5 +57,6 @@ if __name__ == "__main__":
     parser.add_argument("--num_classes", type=int, default=3)
     parser.add_argument("--hidden_size", type=int, default=1)
     parser.add_argument("--epoch", type=int, default=1)
+    parser.add_argument("--trial", type=int, default=1)
     args = parser.parse_args()
     main(args)
