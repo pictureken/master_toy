@@ -95,7 +95,7 @@ class GenerateToyData:
 if __name__ == "__main__":
     generate = GenerateToyData(center=(0.5, 0.5))
     samples, targets = generate.id(
-        num_samples=1000, num_classes=3, train=True, noise=0.4, radius=0.25
+        num_samples=10000, num_classes=3, train=True, noise=0.4, radius=0.25
     )
     plt.scatter(samples[:, 0], samples[:, 1], s=1, c=targets)
     plt.axis("square")
