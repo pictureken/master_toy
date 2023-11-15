@@ -26,7 +26,6 @@ class Trainer:
             inputs, targets = inputs.to(self.device), targets.to(self.device)
             self.optimizer.zero_grad()
             outputs = self.model(inputs)
-            outputs = F.softmax(outputs, dim=1)
             loss = self.criterion(outputs, targets)
             loss.backward()
             self.optimizer.step()
@@ -59,7 +58,6 @@ class Trainer:
                     outputs = self.model(inputs)
                     loss = self.criterion(outputs, targets)
                     outputs_sum[total : (total + inputs.size(0)), :] += outputs
-                    outputs = F.softmax(outputs, dim=1)
                     test_loss += loss.item()
                     _, predicted = outputs.max(1)
                     correct += predicted.eq(targets).sum().item()
@@ -75,7 +73,6 @@ class Trainer:
                 for _, inputs in enumerate(test_loader):
                     inputs = inputs.to(self.device)
                     outputs = self.model(inputs)
-                    outputs = F.softmax(outputs, dim=1)
                     outputs_sum[total : (total + inputs.size(0)), :] += outputs
                     total += inputs.size(0)
 
