@@ -24,7 +24,7 @@ def main(args):
     )
     test_dataset = utils.data.GenerateToyDataset(
         transform,
-        num_samples=100,
+        num_samples=1000,
         num_classes=args.num_classes,
         center=(0.5, 0.5),
         train=False,
