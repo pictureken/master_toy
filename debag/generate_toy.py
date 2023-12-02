@@ -36,6 +36,22 @@ class GenerateToyData:
             targets[idx] = j
         return (samples, targets)
 
+    def generate_spiral_dataset(
+        self, num_samples: int, num_classes: int, noise: float = 0.2
+    ):
+        samples = np.zeros((num_samples * num_classes, 2))
+        targets = np.zeros(num_samples * num_classes, dtype="uint8")
+        for j in range(num_classes):
+            ix = range(num_samples * j, num_samples * (j + 1))
+            r = np.linspace(0.0, 1, num_samples)  # radius
+            t = (
+                np.linspace(j * 6, (j + 1) * 6 * np.pi, num_samples)
+                + np.random.randn(num_samples) * noise
+            )  # theta
+            samples[ix] = np.c_[r * np.sin(t), r * np.cos(t)]
+            targets[ix] = j
+        return samples, targets
+
     def id_gt(
         self,
         num_samples: int,
@@ -94,9 +110,22 @@ class GenerateToyData:
 
 if __name__ == "__main__":
     generate = GenerateToyData(center=(0.5, 0.5))
-    samples, targets = generate.id(
-        num_samples=10000, num_classes=3, train=True, noise=0.4, radius=0.25
+    samples, targets = generate.generate_spiral_dataset(
+        num_samples=10000, num_classes=3, noise=0.2
     )
-    plt.scatter(samples[:, 0], samples[:, 1], s=1, c=targets)
+    print(targets[20000:])
+    plt.scatter(samples[0:10000, 0], samples[0:10000, 1], s=2, label="class0")
+    plt.scatter(
+        samples[10000:20000, 0],
+        samples[10000:20000, 1],
+        s=2,
+        label="class1",
+    )
+    plt.scatter(samples[20000:, 0], samples[20000:, 1], s=2, label="class2")
     plt.axis("square")
+    # plt.xlim([0, 1.0])
+    plt.xlabel("x1", fontsize=13)
+    # plt.ylim([0, 1.0])
+    plt.ylabel("x2", fontsize=13)
+    plt.legend(fontsize=13)
     plt.show()
