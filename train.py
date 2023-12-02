@@ -13,11 +13,11 @@ def main(args):
     transform = transforms.Compose([transforms.ToTensor()])
     train_dataset = utils.data.GenerateToyDataset(
         transform,
-        num_samples=1000,
+        num_samples=3000,
         num_classes=args.num_classes,
         center=(0.5, 0.5),
         train=True,
-        noise=0.6,
+        noise=0.4,
     )
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=128, shuffle=True, num_workers=2

@@ -58,7 +58,7 @@ class GenerateToyData:
         num_classes: int,
         train: bool = True,
         noise: float = None,
-        radius: int = 4,
+        radius: int = 0.25,
     ) -> Tuple[list, list]:
         samples = np.zeros((num_samples * num_classes, 2))
         targets = np.zeros(num_samples * num_classes, dtype="uint8")
@@ -110,15 +110,15 @@ class GenerateToyData:
 
 if __name__ == "__main__":
     generate = GenerateToyData(center=(0.5, 0.5))
-    samples, targets = generate.id(num_samples=1000, num_classes=3, noise=0.6)
-    plt.scatter(samples[0:1000, 0], samples[0:1000, 1], s=2, label="class0")
+    samples, targets = generate.id_gt(num_samples=10000, num_classes=3, noise=0.6)
+    plt.scatter(samples[0:10000, 0], samples[0:10000, 1], s=2, label="class0")
     plt.scatter(
-        samples[1000:2000, 0],
-        samples[1000:2000, 1],
+        samples[10000:20000, 0],
+        samples[10000:20000, 1],
         s=2,
         label="class1",
     )
-    plt.scatter(samples[2000:, 0], samples[2000:, 1], s=2, label="class2")
+    plt.scatter(samples[20000:, 0], samples[20000:, 1], s=2, label="class2")
     plt.axis("square")
     plt.xlim([0, 1.0])
     plt.xlabel("x1", fontsize=13)
