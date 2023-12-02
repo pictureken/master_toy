@@ -110,7 +110,7 @@ class GenerateToyData:
 
 if __name__ == "__main__":
     generate = GenerateToyData(center=(0.5, 0.5))
-    samples, targets = generate.id_gt(num_samples=10000, num_classes=3, noise=0.6)
+    samples, targets = generate.id(num_samples=10000, num_classes=3, noise=0.4)
     plt.scatter(samples[0:10000, 0], samples[0:10000, 1], s=2, label="class0")
     plt.scatter(
         samples[10000:20000, 0],
