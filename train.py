@@ -17,7 +17,7 @@ def main(args):
         num_classes=args.num_classes,
         center=(0.5, 0.5),
         train=True,
-        noise=0.4,
+        noise=0.6,
     )
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=128, shuffle=True, num_workers=2
