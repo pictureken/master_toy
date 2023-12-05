@@ -60,7 +60,7 @@ def main(args):
     os.makedirs(output_tensor_path, exist_ok=True)
     torch.save(
         outputs_sum,
-        os.path.join(output_tensor_path, str(args.hidden_size) + ".pt"),
+        os.path.join(output_tensor_path, str(args.trial) + ".pt"),
     )
 
     # ood test
@@ -72,7 +72,7 @@ def main(args):
     os.makedirs(output_tensor_path, exist_ok=True)
     torch.save(
         outputs_sum,
-        os.path.join(output_tensor_path, str(args.hidden_size) + ".pt"),
+        os.path.join(output_tensor_path, str(args.trial) + ".pt"),
     )
 
     # grid test

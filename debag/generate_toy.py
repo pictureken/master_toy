@@ -111,14 +111,15 @@ class GenerateToyData:
 if __name__ == "__main__":
     generate = GenerateToyData(center=(0.5, 0.5))
     samples, targets = generate.id(num_samples=10000, num_classes=3, noise=0.4)
-    plt.scatter(samples[0:10000, 0], samples[0:10000, 1], s=2, label="class0")
+    plt.scatter(samples[0:10000, 0], samples[0:10000, 1], s=2, label=str(targets[0]))
     plt.scatter(
         samples[10000:20000, 0],
         samples[10000:20000, 1],
         s=2,
-        label="class1",
+        label=str(targets[10000]),
     )
-    plt.scatter(samples[20000:, 0], samples[20000:, 1], s=2, label="class2")
+    plt.scatter(samples[20000:, 0], samples[20000:, 1], s=2, label=str(targets[20000]))
+    print(samples.mean(axis=0))
     plt.axis("square")
     plt.xlim([0, 1.0])
     plt.xlabel("x1", fontsize=13)

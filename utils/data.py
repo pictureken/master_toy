@@ -89,6 +89,31 @@ class GenerateToyDataset(Dataset):
         return len(self.samples)
 
 
+class TTAGenerateToyDataset(Dataset):
+    def __init__(
+        self,
+        transforms,
+        num_samples: int,
+        num_classes: int,
+        center: Tuple[float, float],
+        radius: float = 0.25,
+        train: bool = True,
+        noise: float = 0.4,
+    ) -> None:
+        super().__init__()
+        self.transforms = transforms
+        self.num_samples = num_samples
+        self.num_classes = num_classes
+        self.radius = radius
+        self.center = center
+
+    def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
+        sample = self.samples[index]
+        label = self.targets[index]
+        data = torch.tensor(sample).float()
+        return data, label
+
+
 class GenerateToyCircleDataset(Dataset):
     def __init__(
         self,
@@ -117,9 +142,9 @@ class GenerateToyCircleDataset(Dataset):
 
 
 class GenerateGridDataset(Dataset):
-    def __init__(self) -> None:
-        x = np.linspace(0, 1, 1000)
-        y = np.linspace(0, 1, 1000)
+    def __init__(self, num_samples) -> None:
+        x = np.linspace(0, 1, num_samples)
+        y = np.linspace(0, 1, num_samples)
         xv, yv = np.meshgrid(x, y)
         xv = xv.flatten()
         yv = yv.flatten()
@@ -137,6 +162,26 @@ class GenerateGridDataset(Dataset):
         return len(self.samples)
 
 
+class TTAGenerateGridDataset(GenerateGridDataset):
+    def __init__(self, num_samples, k, sigma) -> None:
+        super().__init__(num_samples)
+        self.k = k
+        self.sigma = sigma
+        self.mean = 0
+
+    def __getitem__(self, index: int) -> torch.Tensor:
+        img_sum = torch.Tensor(self.k, 2).zero_()
+        sample = self.samples[index]
+        for i in range(self.k):
+            if i == 0:
+                img_sum[i, :] += torch.tensor(sample).float()
+                continue
+            ipsilon = np.random.normal(loc=self.mean, scale=self.sigma, size=(2))
+            sample_aug = sample + ipsilon
+            img_sum[i, :] += torch.tensor(sample_aug).float()
+        return img_sum
+
+
 if __name__ == "__main__":
     from torchvision import transforms
 
@@ -149,8 +194,6 @@ if __name__ == "__main__":
     #     train=True,
     #     noise=0.5,
     # )
-    train_dataset = GenerateToyCircleDataset(
-        transforms,
-        num_samples=10000,
-        center=(0.5, 0.5),
-    )
+    train_dataset = TTAGenerateGridDataset(num_samples=100, k=10, sigma=1)
+    a = train_dataset.__getitem__(0)
+    print(a.shape)
