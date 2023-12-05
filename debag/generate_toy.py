@@ -97,9 +97,9 @@ class GenerateToyData:
         y = r * np.sin(theta) + self.center[1]
         return (x, y)
 
-    def grid(self):
-        x = np.linspace(0, 1, 1000)
-        y = np.linspace(0, 1, 1000)
+    def grid(self, num_samples):
+        x = np.linspace(0, 1, num_samples)
+        y = np.linspace(0, 1, num_samples)
         xv, yv = np.meshgrid(x, y)
         xv = xv.flatten()
         yv = yv.flatten()

@@ -14,7 +14,7 @@ def main(args):
 
     # grid data loader
     grid_tta_dataset = utils.data.TTAGenerateGridDataset(
-        num_samples=100, k=10, sigma=args.sigma
+        num_samples=1000, k=10, sigma=args.sigma
     )
     grid_tta_loader = torch.utils.data.DataLoader(
         grid_tta_dataset, batch_size=100, shuffle=False, num_workers=2
