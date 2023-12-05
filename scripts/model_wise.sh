@@ -1,9 +1,8 @@
-hidden_size_list=($(seq 1 1 100))
+hidden_size_list=(1000 5 10 15 17 20 22 35 75 100)
 
 for hidden_size in "${hidden_size_list[@]}"
 do
-    python train.py \
+    python tta.py \
     --hidden_size ${hidden_size} \
-    --epoch 1000 \
-    --trial 1
+    --sigma 0.5
 done

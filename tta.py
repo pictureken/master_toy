@@ -39,9 +39,13 @@ def main(args):
     # grid test
     outputs_sum = trainer.tta(grid_tta_loader)
     if args.bn:
-        output_tensor_path = f"./outputs/tensor/grid_tta/{args.hidden_size}bn/"
+        output_tensor_path = (
+            f"./outputs/tensor/grid_tta_{args.sigma}/{args.hidden_size}bn/"
+        )
     else:
-        output_tensor_path = f"./outputs/tensor/grid_tta/{args.hidden_size}/"
+        output_tensor_path = (
+            f"./outputs/tensor/grid_tta_{args.sigma}/{args.hidden_size}/"
+        )
     os.makedirs(output_tensor_path, exist_ok=True)
     torch.save(
         outputs_sum,
