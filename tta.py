@@ -37,7 +37,7 @@ def main(args):
     trainer = utils.trainer.Trainer(device, model, loss_function)
 
     # grid test
-    outputs_sum = trainer.tta(grid_tta_loader, id=False)
+    outputs_sum = trainer.tta(grid_tta_loader)
     if args.bn:
         output_tensor_path = f"./outputs/tensor/grid_tta/{args.hidden_size}bn/"
     else:
