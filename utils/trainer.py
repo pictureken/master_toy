@@ -26,7 +26,6 @@ class Trainer:
             inputs, targets = inputs.to(self.device), targets.to(self.device)
             self.optimizer.zero_grad()
             outputs = self.model(inputs)
-            outputs = F.softmax(outputs, dim=1)
             loss = self.criterion(outputs, targets)
             loss.backward()
             self.optimizer.step()
@@ -39,32 +38,66 @@ class Trainer:
         train_loss = train_loss / total
         train_accuracy = correct / total
 
-        return (
-            train_loss,
-            train_accuracy,
-        )
+        return (train_loss, train_accuracy, self.model)
 
-    def test(self, test_loader):
+    def test(self, test_loader, id: bool = True):
         self.model.eval()
         test_loss = 0
         correct = 0
         total = 0
-
-        with torch.no_grad():
-            for _, (inputs, targets) in enumerate(test_loader):
-                inputs, targets = inputs.to(self.device), targets.to(self.device)
-                outputs = self.model(inputs)
-                loss = self.criterion(outputs, targets)
-                outputs = F.softmax(outputs, dim=1)
-                test_loss += loss.item()
-                _, predicted = outputs.max(1)
-                correct += predicted.eq(targets).sum().item()
-                total += targets.size(0)
-
-            test_loss = test_loss / total
-            test_accuracy = correct / total
-
-        return (
-            test_loss,
-            test_accuracy,
+        outputs_sum = (
+            torch.Tensor(len(test_loader) * test_loader.batch_size, 3)
+            .zero_()
+            .to(self.device)
         )
+        # In-Distribution
+        if id:
+            with torch.no_grad():
+                for _, (inputs, targets) in enumerate(test_loader):
+                    inputs, targets = inputs.to(self.device), targets.to(self.device)
+                    outputs = self.model(inputs)
+                    loss = self.criterion(outputs, targets)
+                    outputs_sum[total : (total + inputs.size(0)), :] += outputs
+                    test_loss += loss.item()
+                    _, predicted = outputs.max(1)
+                    correct += predicted.eq(targets).sum().item()
+                    total += targets.size(0)
+
+                test_loss = test_loss / total
+                test_accuracy = correct / total
+
+            return (test_loss, test_accuracy, outputs_sum)
+        # Out-of-Distribution
+        else:
+            with torch.no_grad():
+                for _, inputs in enumerate(test_loader):
+                    inputs = inputs.to(self.device)
+                    outputs = self.model(inputs)
+                    outputs_sum[total : (total + inputs.size(0)), :] += outputs
+                    total += inputs.size(0)
+
+            return outputs_sum
+
+    def tta(self, tta_loader):
+        self.model.eval()
+        total = 0
+        outputs_sum = (
+            torch.Tensor(
+                len(tta_loader.dataset),
+                tta_loader.dataset.k,
+                3,
+            )
+            .zero_()
+            .to(self.device)
+        )
+        with torch.no_grad():
+            for _, aug_inputs in enumerate(tta_loader):
+                aug_inputs = aug_inputs.to(self.device)
+                batch_size, num_aug, c = aug_inputs.shape
+                aug_inputs = aug_inputs.reshape(batch_size * num_aug, c)
+                aug_outputs = self.model(aug_inputs)
+                aug_outputs = aug_outputs.reshape(batch_size, num_aug, 3)
+                outputs_sum[total : (total + batch_size), :] += aug_outputs
+                total += batch_size
+
+        return outputs_sum
