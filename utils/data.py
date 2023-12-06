@@ -100,12 +100,9 @@ class TTAGenerateToyDataset(Dataset):
         train: bool = True,
         noise: float = 0.4,
     ) -> None:
-        super().__init__()
-        self.transforms = transforms
-        self.num_samples = num_samples
-        self.num_classes = num_classes
-        self.radius = radius
-        self.center = center
+        super().__init__(
+            transforms, num_samples, num_classes, radius, center, noise, train
+        )
 
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
         sample = self.samples[index]

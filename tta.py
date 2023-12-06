@@ -56,5 +56,7 @@ if __name__ == "__main__":
     parser.add_argument("--bn", action="store_true")
     parser.add_argument("--trial", type=int, default=1)
     parser.add_argument("--sigma", type=float, default=0.5)
+    parser.add_argument("--grid", action="store_true")
+    parser.add_argument("--id", action="store_true")
     args = parser.parse_args()
     main(args)

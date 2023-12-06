@@ -111,14 +111,18 @@ class GenerateToyData:
 if __name__ == "__main__":
     generate = GenerateToyData(center=(0.5, 0.5))
     samples, targets = generate.id(num_samples=10000, num_classes=3, noise=0.4)
-    plt.scatter(samples[0:10000, 0], samples[0:10000, 1], s=2, label=str(targets[0]))
+    plt.scatter(
+        samples[0:10000, 0], samples[0:10000, 1], s=2, label="class" + str(targets[0])
+    )
     plt.scatter(
         samples[10000:20000, 0],
         samples[10000:20000, 1],
         s=2,
-        label=str(targets[10000]),
+        label="class" + str(targets[10000]),
     )
-    plt.scatter(samples[20000:, 0], samples[20000:, 1], s=2, label=str(targets[20000]))
+    plt.scatter(
+        samples[20000:, 0], samples[20000:, 1], s=2, label="class" + str(targets[20000])
+    )
     print(samples.mean(axis=0))
     plt.axis("square")
     plt.xlim([0, 1.0])
@@ -126,4 +130,4 @@ if __name__ == "__main__":
     plt.ylim([0, 1.0])
     plt.ylabel("x2", fontsize=13)
     plt.legend(fontsize=13)
-    plt.show()
+    plt.savefig("./dataset.png", bbox_inches="tight", pad_inches=0)
