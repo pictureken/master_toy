@@ -40,13 +40,13 @@ class Trainer:
 
         return (train_loss, train_accuracy, self.model)
 
-    def test(self, test_loader, id: bool = True):
+    def test(self, test_loader, num_classes, id: bool = True):
         self.model.eval()
         test_loss = 0
         correct = 0
         total = 0
         outputs_sum = (
-            torch.Tensor(len(test_loader) * test_loader.batch_size, 3)
+            torch.Tensor(len(test_loader) * test_loader.batch_size, num_classes)
             .zero_()
             .to(self.device)
         )

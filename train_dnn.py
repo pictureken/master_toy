@@ -45,7 +45,7 @@ def main(args):
     for i in range(args.epoch):
         train_loss, train_acc, model = trainer.train(train_loader)
         print(f"Train@{i+1} loss {train_loss}," f"accuracy {train_acc:.2%}")
-        test_loss, test_acc, _ = trainer.test(test_loader)
+        test_loss, test_acc, _ = trainer.test(test_loader, args.num_classes)
         print(f"Test@{i+1} loss {test_loss}," f"accuracy {test_acc:.2%}")
 
     output_model_path = f"./outputs/pretrain_dnn/{args.hidden_size}"
