@@ -78,14 +78,14 @@ class Trainer:
 
             return outputs_sum
 
-    def tta(self, tta_loader):
+    def tta(self, tta_loader, num_classes):
         self.model.eval()
         total = 0
         outputs_sum = (
             torch.Tensor(
                 len(tta_loader.dataset),
                 tta_loader.dataset.k,
-                3,
+                num_classes,
             )
             .zero_()
             .to(self.device)
@@ -96,7 +96,7 @@ class Trainer:
                 batch_size, num_aug, c = aug_inputs.shape
                 aug_inputs = aug_inputs.reshape(batch_size * num_aug, c)
                 aug_outputs = self.model(aug_inputs)
-                aug_outputs = aug_outputs.reshape(batch_size, num_aug, 3)
+                aug_outputs = aug_outputs.reshape(batch_size, num_aug, num_classes)
                 outputs_sum[total : (total + batch_size), :] += aug_outputs
                 total += batch_size
 
