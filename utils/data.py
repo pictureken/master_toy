@@ -47,7 +47,7 @@ class GenerateToyDataset(Dataset):
     def _gen_train(self):
         samples = np.zeros((self.num_samples * self.num_classes, self.dim))
         targets = np.zeros(self.num_samples * self.num_classes, dtype="uint8")
-        for j in range(self.num_classes):
+        for j in range(self.num_classes - 1):
             idx = range(self.num_samples * j, self.num_samples * (j + 1))
             r = np.linspace(0.0, self.radius, self.num_samples)  # radius
             t = (
@@ -59,14 +59,14 @@ class GenerateToyDataset(Dataset):
                 r * np.cos(t) + self.center[1],
             ]
             targets[idx] = j
-        theta = 2 * np.pi * np.random.rand(self.num_samples)
+        t = 2 * np.pi * np.random.rand(self.num_samples)
         r = self.inner_radius + (
             self.outer_radius - self.inner_radius
         ) * np.random.rand(self.num_samples)
-        x = r * np.cos(theta) + self.center[0]
-        y = r * np.sin(theta) + self.center[1]
         idx = range(self.num_samples * (j + 1), self.num_samples * (j + 2))
-        samples[idx] = np.c_[x, y]
+        samples[idx] = np.c_[
+            r * np.cos(t) + self.center[0], r * np.sin(t) + self.center[1]
+        ]
         targets[idx] = j + 1
         return (samples, targets)
 
@@ -77,7 +77,7 @@ class GenerateToyDataset(Dataset):
         targets = np.zeros(self.num_samples * self.num_classes, dtype="uint8")
         split_samples = self.num_samples // SPLIT
         total = 0
-        for j in range(self.num_classes):
+        for j in range(self.num_classes - 1):
             for i in range(SPLIT):
                 idx = range(total, total + split_samples)
                 r = np.linspace(0.0, self.radius, split_samples)  # radius
