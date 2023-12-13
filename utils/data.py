@@ -121,7 +121,7 @@ class TTAGenerateToyDataset(Dataset):
         num_samples: int,
         num_classes: int,
         center: Tuple[float, float],
-        radius: float = 0.25,
+        radius: float = 0.15,
         train: bool = True,
         noise: float = 0.4,
     ) -> None:
