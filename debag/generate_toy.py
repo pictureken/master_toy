@@ -18,11 +18,12 @@ class GenerateToyData:
         noise: float = None,
         radius: int = 0.15,
         inner_radius: int = 0.30,
-        outer_radius: int = 0.45,
+        outer_radius: int = 0.35,
+        dim: int = 2,
     ) -> Tuple[list, list]:
         if not train:
             noise = 0
-        samples = np.zeros((num_samples * 4, 2))
+        samples = np.zeros((num_samples * 4, dim))
         targets = np.zeros(num_samples * 4, dtype="uint8")
         for j in range(num_classes):
             idx = range(num_samples * j, num_samples * (j + 1))
@@ -44,6 +45,31 @@ class GenerateToyData:
         print(samples[idx].shape, np.c_[x, y].shape)
         samples[idx] = np.c_[x, y]
         targets[idx] = j + 1
+        return (samples, targets)
+
+    def new(
+        self,
+        num_samples: int,
+        num_classes: int,
+        train: bool = True,
+        noise: float = None,
+        radius: int = 0.15,
+        inner_radius: int = 0.30,
+        outer_radius: int = 0.35,
+        dim: int = 2,
+    ) -> Tuple[list, list]:
+        if not train:
+            noise = 0
+        samples = np.zeros((num_samples * 4, dim))
+        targets = np.zeros(num_samples * 4, dtype="uint8")
+        mean_list = [0.5, 0.2, 0.8]
+        for j in range(num_classes):
+            idx = range(num_samples * j, num_samples * (j + 1))
+            x = np.random.normal(
+                loc=mean_list[j], scale=0.04, size=(num_samples, dim)
+            )  # radius
+            samples[idx] = x
+            targets[idx] = j
         return (samples, targets)
 
     def generate_spiral_dataset(
@@ -130,7 +156,7 @@ class GenerateToyData:
 
 if __name__ == "__main__":
     generate = GenerateToyData(center=(0.5, 0.5))
-    samples, targets = generate.id(num_samples=10000, num_classes=3, noise=0.4)
+    samples, targets = generate.new(num_samples=10000, num_classes=3, noise=0.4)
     plt.scatter(
         samples[0:10000, 0], samples[0:10000, 1], s=2, label="class" + str(targets[0])
     )
@@ -146,9 +172,7 @@ if __name__ == "__main__":
         s=2,
         label="class" + str(targets[20000]),
     )
-    plt.scatter(
-        samples[30000:, 0], samples[30000:, 1], s=2, label="class" + str(targets[30000])
-    )
+
     print(samples.mean(axis=0))
     plt.axis("square")
     plt.xlim([0, 1.0])

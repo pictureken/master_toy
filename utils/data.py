@@ -6,6 +6,72 @@ import torch
 from torch.utils.data import Dataset
 
 
+class GenerateSimpleToyDataset(Dataset):
+    def __init__(
+        self,
+        transforms,
+        num_samples: int,
+        num_classes: int,
+        train: bool = True,
+        dim: int = 2,
+    ) -> None:
+        super().__init__()
+        self.transforms = transforms
+        self.num_samples = num_samples
+        self.num_classes = num_classes
+        self.dim = dim
+
+        if train:
+            # train dataset
+            random.seed(2022)
+            np.random.seed(2022)
+            samples, targets = self._gen_train()
+
+        else:
+            # test dataset
+            random.seed(2023)
+            np.random.seed(2023)
+            samples, targets = self._gen_test()
+
+        self.samples = samples
+        self.targets = targets
+
+    def _gen_train(self):
+        samples = np.zeros((self.num_samples * self.num_classes, self.dim))
+        targets = np.zeros(self.num_samples * self.num_classes, dtype="uint8")
+        mean_list = [0.5, 0.2, 0.8]
+        for j in range(self.num_classes):
+            idx = range(self.num_samples * j, self.num_samples * (j + 1))
+            x = np.random.normal(
+                loc=mean_list[j], scale=0.04, size=(self.num_samples, self.dim)
+            )
+            samples[idx] = x
+            targets[idx] = j
+        return (samples, targets)
+
+    def _gen_test(self):
+        samples = np.zeros((self.num_samples * self.num_classes, self.dim))
+        targets = np.zeros(self.num_samples * self.num_classes, dtype="uint8")
+        mean_list = [0.5, 0.2, 0.8]
+        for j in range(self.num_classes):
+            idx = range(self.num_samples * j, self.num_samples * (j + 1))
+            x = np.random.normal(
+                loc=mean_list[j], scale=0.04, size=(self.num_samples, self.dim)
+            )
+            samples[idx] = x
+            targets[idx] = j
+        return (samples, targets)
+
+    def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
+        sample = self.samples[index]
+        label = self.targets[index]
+        data = torch.tensor(sample).float()
+        return data, label
+
+    def __len__(self) -> int:
+        return len(self.samples)
+
+
 class GenerateToyDataset(Dataset):
     def __init__(
         self,
