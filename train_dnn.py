@@ -61,7 +61,7 @@ if __name__ == "__main__":
     parser.add_argument("--num_classes", type=int, default=4)
     parser.add_argument("--hidden_size", type=int, default=64)
     parser.add_argument("--bn", action="store_true")
-    parser.add_argument("--epoch", type=int, default=1)
+    parser.add_argument("--epoch", type=int, default=500)
     parser.add_argument("--dim", type=int, default=2)
     parser.add_argument("--trial", type=int, default=1)
     args = parser.parse_args()
