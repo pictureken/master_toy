@@ -13,16 +13,22 @@ class GenerateToyDataset(Dataset):
         num_samples: int,
         num_classes: int,
         center: Tuple[float, float],
-        radius: float = 0.25,
+        radius: float = 0.15,
+        inner_radius: int = 0.30,
+        outer_radius: int = 0.45,
         train: bool = True,
         noise: float = 0.4,
+        dim: int = 2,
     ) -> None:
         super().__init__()
         self.transforms = transforms
         self.num_samples = num_samples
         self.num_classes = num_classes
         self.radius = radius
+        self.inner_radius = inner_radius
+        self.outer_radius = outer_radius
         self.center = center
+        self.dim = dim
 
         if train:
             # train dataset
@@ -39,7 +45,7 @@ class GenerateToyDataset(Dataset):
         self.targets = targets
 
     def _gen_train(self):
-        samples = np.zeros((self.num_samples * self.num_classes, 2))
+        samples = np.zeros((self.num_samples * self.num_classes, self.dim))
         targets = np.zeros(self.num_samples * self.num_classes, dtype="uint8")
         for j in range(self.num_classes):
             idx = range(self.num_samples * j, self.num_samples * (j + 1))
@@ -53,6 +59,15 @@ class GenerateToyDataset(Dataset):
                 r * np.cos(t) + self.center[1],
             ]
             targets[idx] = j
+        theta = 2 * np.pi * np.random.rand(self.num_samples)
+        r = self.inner_radius + (
+            self.outer_radius - self.inner_radius
+        ) * np.random.rand(self.num_samples)
+        x = r * np.cos(theta) + self.center[0]
+        y = r * np.sin(theta) + self.center[1]
+        idx = range(self.num_samples * (j + 1), self.num_samples * (j + 2))
+        samples[idx] = np.c_[x, y]
+        targets[idx] = j + 1
         return (samples, targets)
 
     def _gen_test(self):
@@ -77,6 +92,16 @@ class GenerateToyDataset(Dataset):
                 ]
                 targets[idx] = CLASS_LIST[j]
                 total += split_samples
+        np.random.seed(2023)
+        theta = 2 * np.pi * np.random.rand(self.num_samples)
+        r = self.inner_radius + (
+            self.outer_radius - self.inner_radius
+        ) * np.random.rand(self.num_samples)
+        x = r * np.cos(theta) + self.center[0]
+        y = r * np.sin(theta) + self.center[1]
+        idx = range(self.num_samples * (j + 1), self.num_samples * (j + 2))
+        samples[idx] = np.c_[x, y]
+        targets[idx] = j + 1
         return (samples, targets)
 
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
