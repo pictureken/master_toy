@@ -180,7 +180,7 @@ class GenerateToyDataset(Dataset):
         return len(self.samples)
 
 
-class TTAGenerateToyDataset(Dataset):
+class TTAGenerateToyDataset(GenerateToyDataset):
     def __init__(
         self,
         transforms,
