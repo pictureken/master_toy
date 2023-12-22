@@ -116,7 +116,7 @@ class Trainer:
         )
         with torch.no_grad():
             for _, (aug_inputs, aug_targets) in enumerate(tta_loader):
-                aug_inputs = aug_inputs.to(self.device), aug_targets.to(self.device)
+                aug_inputs, _ = aug_inputs.to(self.device), aug_targets.to(self.device)
                 batch_size, num_aug, c = aug_inputs.shape
                 aug_inputs = aug_inputs.reshape(batch_size * num_aug, c)
                 aug_outputs = self.model(aug_inputs)
