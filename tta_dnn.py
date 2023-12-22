@@ -24,6 +24,7 @@ def main(args):
         transforms=transform,
         num_samples=1000,
         num_classes=4,
+        center=(0.5, 0.5),
         k=10,
         sigma=args.sigma,
     )
