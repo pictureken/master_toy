@@ -34,7 +34,7 @@ def main(args):
 
     model = utils.model.FCNet(
         in_features=args.dim,
-        hidden_size=args.hidden_size,
+        width=args.hidden_size,
         out_features=args.num_classes,
     )
 
