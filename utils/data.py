@@ -188,13 +188,23 @@ class TTAGenerateToyDataset(GenerateToyDataset):
         num_classes: int,
         center: Tuple[float, float],
         radius: float = 0.15,
+        inner_radius: int = 0.30,
+        outer_radius: int = 0.45,
         train: bool = True,
         noise: float = 0.4,
         k: int = 10,
         sigma: float = 0.01,
     ) -> None:
         super().__init__(
-            transforms, num_samples, num_classes, radius, center, noise, train
+            transforms,
+            num_samples,
+            num_classes,
+            center,
+            radius,
+            inner_radius,
+            outer_radius,
+            noise,
+            train,
         )
         self.k = k
         self.sigma = sigma
