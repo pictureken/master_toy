@@ -101,3 +101,27 @@ class Trainer:
                 total += batch_size
 
         return outputs_sum
+
+    def id_tta(self, tta_loader, num_classes):
+        self.model.eval()
+        total = 0
+        outputs_sum = (
+            torch.Tensor(
+                len(tta_loader.dataset),
+                tta_loader.dataset.k,
+                num_classes,
+            )
+            .zero_()
+            .to(self.device)
+        )
+        with torch.no_grad():
+            for _, aug_inputs, aug_targets in enumerate(tta_loader):
+                aug_inputs = aug_inputs.to(self.device), aug_targets.to(self.device)
+                batch_size, num_aug, c = aug_inputs.shape
+                aug_inputs = aug_inputs.reshape(batch_size * num_aug, c)
+                aug_outputs = self.model(aug_inputs)
+                aug_outputs = aug_outputs.reshape(batch_size, num_aug, num_classes)
+                outputs_sum[total : (total + batch_size), :] += aug_outputs
+                total += batch_size
+
+        return outputs_sum
