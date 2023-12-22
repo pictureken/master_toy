@@ -190,16 +190,30 @@ class TTAGenerateToyDataset(Dataset):
         radius: float = 0.15,
         train: bool = True,
         noise: float = 0.4,
+        k: int = 10,
+        sigma: float = 0.01,
     ) -> None:
         super().__init__(
             transforms, num_samples, num_classes, radius, center, noise, train
         )
+        self.k = k
+        self.sigma = sigma
+        self.mean = 0
 
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
+        img_sum = torch.Tensor(self.k, 2).zero_()
+        label_sum = torch.LongTensor(self.k).zero_()
         sample = self.samples[index]
         label = self.targets[index]
-        data = torch.tensor(sample).float()
-        return data, label
+        for i in range(self.k):
+            label_sum[i] += label
+            if i == 0:
+                img_sum[i, :] += torch.tensor(sample).float()
+                continue
+            ipsilon = np.random.normal(loc=self.mean, scale=self.sigma, size=(2))
+            sample_aug = sample + ipsilon
+            img_sum[i, :] += torch.tensor(sample_aug).float()
+        return img_sum, label_sum
 
 
 class GenerateToyCircleDataset(Dataset):

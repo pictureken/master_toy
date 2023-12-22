@@ -19,6 +19,13 @@ def main(args):
     grid_tta_loader = torch.utils.data.DataLoader(
         grid_tta_dataset, batch_size=100, shuffle=False, num_workers=2
     )
+    # id data loader
+    id_tta_dataset = utils.data.TTAGenerateToyDataset(
+        num_samples=1000, k=10, sigma=args.sigma
+    )
+    id_tta_loader = torch.utils.data.DataLoader(
+        id_tta_dataset, batch_size=100, shuffle=False, num_workers=2
+    )
 
     model = utils.model.FCNet(
         in_features=args.dim,
@@ -35,6 +42,14 @@ def main(args):
     # grid test
     outputs_sum = trainer.tta(grid_tta_loader, args.num_classes)
     output_tensor_path = f"./outputs/tensor_dnn/grid_tta/{args.hidden_size}/"
+    os.makedirs(output_tensor_path, exist_ok=True)
+    torch.save(
+        outputs_sum,
+        os.path.join(output_tensor_path, str(args.sigma) + ".pt"),
+    )
+    # id test
+    outputs_sum = trainer.tta(id_tta_loader, args.num_classes)
+    output_tensor_path = f"./outputs/tensor_dnn/id_tta/{args.hidden_size}/"
     os.makedirs(output_tensor_path, exist_ok=True)
     torch.save(
         outputs_sum,
