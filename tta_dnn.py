@@ -14,14 +14,18 @@ def main(args):
 
     # grid data loader
     grid_tta_dataset = utils.data.TTAGenerateGridDataset(
-        transforms=transform, num_samples=1000, num_classes=4, k=10, sigma=args.sigma
+        num_samples=1000, k=10, sigma=args.sigma
     )
     grid_tta_loader = torch.utils.data.DataLoader(
         grid_tta_dataset, batch_size=100, shuffle=False, num_workers=2
     )
     # id data loader
     id_tta_dataset = utils.data.TTAGenerateToyDataset(
-        num_samples=1000, k=10, sigma=args.sigma
+        transforms=transform,
+        num_samples=1000,
+        num_classes=4,
+        k=10,
+        sigma=args.sigma,
     )
     id_tta_loader = torch.utils.data.DataLoader(
         id_tta_dataset, batch_size=100, shuffle=False, num_workers=2
