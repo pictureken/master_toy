@@ -53,7 +53,7 @@ def main(args):
         os.path.join(output_tensor_path, str(args.sigma) + ".pt"),
     )
     # id test
-    outputs_sum = trainer.tta(id_tta_loader, args.num_classes)
+    outputs_sum = trainer.id_tta(id_tta_loader, args.num_classes)
     output_tensor_path = f"./outputs/tensor_dnn/id_tta/{args.hidden_size}/"
     os.makedirs(output_tensor_path, exist_ok=True)
     torch.save(
